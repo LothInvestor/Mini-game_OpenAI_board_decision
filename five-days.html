@@ -1,0 +1,308 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Five Days at OpenAI</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one projected screen. 770 staff dots cross a room above; the day's decision and its decoding sit below. Single light look by choice (GitHub-style white). */
+:root{--bg:#ffffff;--deep:#f6f8fa;--line:#d1d9e0;--fg:#1f2328;--soft:#59636e;--stay:#0969da;--away:#bc4c00;--good:#1a7f37;--bad:#cf222e;--go:#1f883d;--tint:#ddf4ff;--tintline:#54aeff;
+--disp:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif;--body:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif;color-scheme:light}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:17px/1.4 var(--body)}
+.wrap{max-width:1180px;margin:auto;padding-block:14px 24px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--disp);line-height:1.12;margin:0;text-wrap:balance}
+h1{font-size:clamp(32px,3.6vw,42px);font-weight:800}h2{font-size:clamp(22px,2.6vw,30px)}h3{font-size:18px}
+p{margin:0;max-width:68ch}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid var(--stay);outline-offset:2px}
+.bar{display:flex;gap:8px 14px;align-items:center;flex-wrap:wrap}
+.days{display:flex;gap:6px;flex:1;flex-wrap:wrap;padding:0;margin:0;list-style:none}
+.days li{padding:3px 11px;border:1px solid var(--line);border-radius:4px;color:var(--soft);font-size:15px}
+.days .now{background:var(--fg);color:var(--deep);font-weight:700}.days .done{border-color:var(--stay);color:var(--stay)}
+.small{background:var(--go);color:var(--bg);border:0;border-radius:6px;padding:5px 18px;font-weight:700}
+.small.back{background:var(--deep);color:var(--fg);box-shadow:inset 0 0 0 1px var(--line)}
+.bar{margin-bottom:10px}
+.room{background:var(--deep);border:1px solid var(--line);border-radius:6px;padding:10px 14px}
+canvas{display:block;width:100%;height:106px}
+.poles{display:flex;justify-content:space-between;gap:12px;font-weight:700}.poles span:first-child{color:var(--stay)}.poles span:last-child{color:var(--away);text-align:right}
+.meters{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:8px;font-size:15px}
+.meters b{font-variant-numeric:tabular-nums}.meters i{display:block;height:6px;background:var(--line);margin-top:3px}.meters em{display:block;height:100%;background:var(--good)}
+#panel{padding-top:16px;display:grid;gap:13px}
+.choices{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.choice{text-align:left;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:13px 15px;display:flex;gap:11px;min-width:0}
+.choice:hover{border-color:var(--stay)}.choice b{font:800 25px/1 var(--disp);color:var(--stay)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px 30px}.two>*{min-width:0}
+.ref{display:block;color:var(--stay);font-size:15px}
+.soft{color:var(--soft)}
+.roles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.fc{display:block;margin-top:5px;font-size:15.5px;line-height:1.3}.choice .fc b{font:700 1em var(--body);color:var(--fg)}
+.up{color:var(--good)}.dn{color:var(--bad)}.fc.soft{color:var(--soft)}
+.you{grid-column:1/-1;max-width:none;display:flex;flex-wrap:wrap;gap:2px 22px;border-top:1px solid var(--line);padding-top:7px}.you>b{color:var(--stay)}
+dl{margin:6px 0 0;display:grid;gap:5px}dl div{display:grid;grid-template-columns:9.5em 1fr;gap:10px}dt{color:var(--soft)}dd{margin:0}
+.mx{margin-top:7px}.mx i{display:block;height:6px;background:var(--line);margin-top:3px}.mx em{display:block;height:100%;background:var(--stay)}
+[hidden]{display:none!important}
+#head{display:grid;gap:8px;margin-bottom:14px}#head p,#panel>p{max-width:100ch}
+.got{max-width:none}
+.days li b{display:block;font-size:13.5px;line-height:1.2}.cite{font:400 16px var(--body);color:var(--stay);display:inline-block}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px 26px}.steps>*{min-width:0}.steps h3,.two h3{color:var(--stay);margin-bottom:4px}.lens{max-width:none}
+.study .room canvas{height:54px}
+.chain{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.chain li{background:var(--deep);border:1px solid var(--line);border-radius:6px;padding:10px 12px;display:grid;gap:2px;align-content:start;position:relative;min-width:0}.chain li+li::before{content:"\2192";position:absolute;left:-13px;top:50%;translate:0 -50%;color:var(--stay);font-weight:700}.chain em{font-style:normal;color:var(--soft);font-size:14px}.chain span{color:var(--stay)}
+.tw{overflow-x:auto}table{border-collapse:collapse;width:100%;min-width:860px;font-size:14.5px;line-height:1.3}th,td{text-align:left;vertical-align:top;padding:6px 12px 6px 0;border-bottom:1px solid var(--line);font-weight:400}thead th{color:var(--stay);font-weight:700}tbody th{font-weight:700}tbody em{display:block;font-style:normal;font-weight:400;color:var(--soft);font-size:13px}
+.ending .room .poles{display:none}
+.hb{display:table;border:1px solid var(--stay);color:var(--stay);border-radius:3px;padding:0 7px;margin-bottom:5px;font-size:14px;font-weight:700}
+.tip{white-space:nowrap}.i{display:inline-grid;place-items:center;width:20px;height:20px;padding:0;margin:0 1px 0 6px;border:1.5px solid var(--stay);border-radius:50%;background:none;color:var(--stay);font:700 13px/1 var(--body);vertical-align:2px}.i:hover,.i[aria-expanded="true"]{background:var(--stay);color:var(--deep)}.demo{width:17px;height:17px;margin:0 2px;font-size:11px;vertical-align:1px}
+.pop{position:fixed;z-index:20;display:block;white-space:normal;background:var(--fg);color:var(--deep);padding:12px 14px;border-radius:6px;font:400 15.5px/1.4 var(--body);box-shadow:0 8px 24px var(--deep)}.pop em,.pop strong{display:block;font-style:normal;font-weight:700;margin-bottom:5px}
+.rv{display:block;background:var(--deep);color:var(--fg);border:0;border-radius:4px;padding:7px 13px;margin-top:8px;font-weight:700}
+.so{background:var(--tint);color:var(--fg);border:1px solid var(--tintline);padding:10px 15px;border-radius:4px;max-width:none}
+.go{justify-self:start;background:var(--go);color:var(--bg);border:0;border-radius:6px;font-weight:700;font-size:20px;padding:12px 26px}
+.recs{margin:0;padding-left:24px;display:grid;gap:7px}.recs li::marker{color:var(--stay);font-weight:700}
+.ending .room canvas,.ending .you{display:none}.ending p{max-width:none}
+@media(min-width:1000px){.wrap:not(.ending) #panel{font-size:18px;gap:11px}.wrap:not(.ending) #panel h3{font-size:21px}.ending{font-size:15.5px}.ending #panel{gap:9px;padding-top:11px}.ending .go{font-size:16px;padding:7px 18px}}
+a{color:var(--stay)}summary{cursor:pointer}
+@media(max-width:720px){.days{flex-basis:100%}body{font-size:16px}.choices,.two,.roles,.steps,.chain{grid-template-columns:1fr}.chain li+li::before{left:12px;top:-12px;content:"\2193"}.meters{gap:9px;font-size:14px}canvas{height:120px}}
+</style>
+<main class="wrap" id="game">
+<header id="head"></header>
+<div class="bar"><button class="small back" id="back" type="button">← Back</button><ol class="days" id="days"></ol><button class="small" id="next">Continue</button></div>
+<div class="room"><div class="poles"><span id="stay"></span><span id="away"></span></div><canvas id="cv" role="img" aria-label="770 dots, one per employee, moving from the board's side to Altman's side"></canvas><div class="meters" id="meters"></div></div>
+<section id="panel" aria-live="polite"></section>
+</main>
+<script>
+const D=[
+{d:"Fri 17 Nov",t:"The vote",s:"Four of OpenAI's six directors no longer trust CEO Sam Altman{{stake}}. Their four votes can fire him today{{memo}}. Microsoft, the biggest investor, does not know yet.",q:"You have one of four votes. How should the board act?",
+c:[["Fire him now. Publish one short reason.",200,-15,-5,-20],["Brief executives and Microsoft first, then publish specific reasons.",60,8,12,-3],["Put him on leave and open an independent review.",40,5,10,-2]],
+h:"The board fired him, saying he was “not consistently candid”{{chatgpt}}. Microsoft heard shortly before the public. President Greg Brockman quit.",
+so:"Before using formal power, map who holds informal power.",g:"Who would our group follow if nobody had a title?"},
+{d:"Sat 18 Nov",t:"The silence",s:"About 770 employees ask why. Internally, the COO says it was a breakdown in communication, with no malfeasance. Investors push for Altman's return.",q:"What do you tell staff?",
+c:[["Give no further detail.",120,-15,-8,-8],["Hold a Q&A. Acknowledge the shock, then give the reasons.",20,12,8,6],["Let the investors explain it.",90,-8,-10,-2]],
+h:"The board still gave no detailed explanation. Staff posted heart emojis in public support of Altman.",
+so:"Acknowledge emotion first. Then explain, in person, within hours.",g:"When we change a plan, do we explain it to whoever missed the meeting?"},
+{d:"Sun 19 Nov",t:"The guest badge",s:"Altman is back at headquarters to negotiate, wearing a guest badge. Mira Murati is interim CEO{{murati}}. Talks are failing.",q:"Who do you put in charge tomorrow morning?",
+c:[["An outsider: ex-Twitch CEO Emmett Shear.",185,-10,-5,-12],["Keep Murati, with a mediator and a clear mandate.",40,8,8,8],["Bring Altman back with no conditions.",-80,5,-20,15]],
+h:"The board appointed Shear, its second interim CEO in three days. Microsoft then offered Altman and Brockman a new home.",
+so:"Name a trusted interim leader before the announcement.",g:"Are there subgroups among us? Who connects them?"},
+{d:"Mon 20 Nov",t:"The letter",s:"Staff sign a letter threatening to join Microsoft{{jobs}} unless the board resigns. Ilya Sutskever, one of the four who fired Altman, sees it spread.",q:"What do you do?",
+c:[["Hold out, even when Sutskever breaks ranks.",240,-8,-15,-15],["Meet staff delegates through a neutral mediator.",40,12,8,10],["Warn signatories about their contracts.",260,-20,-12,-18]],
+h:"Sutskever signed the letter and publicly regretted his part. Signatures rose to a reported 745 of about 770.",
+so:"Build a private way to dissent, and a safe way to change your mind.",g:"Do we agree, or did the third person simply follow the first two?"},
+{d:"Tue 21 Nov",t:"The return",s:"Almost the whole company may leave. The two sides must settle what survives, under which rules.",q:"What settlement do you accept?",
+c:[["Altman returns, with a new initial board.",-690,8,3,35],["He returns with written duties: review, disclosure rules, staff hotline.",-650,18,20,30],["Refuse. Let the team go to Microsoft.",700,-10,0,-30]],
+h:"Altman returned{{after}}. Bret Taylor and Larry Summers joined Adam D'Angelo on a new initial board. A law-firm review came later{{review}}.",
+so:"Keep accountability and people together: a return with conditions.",g:"After our own storming stage (Tuckman, S1), did we set new norms?"}];
+/* Track A: Altman. Choice = [text, staff moved, trust, legitimacy, stability] */
+const A=[
+{q:"You have just been fired on a video call. What do you do?",c:[["Post a warm goodbye and gather allies.",200,-15,-5,-20],["Ask the board privately for its reasons.",90,-4,4,-8],["Attack the board in public.",230,-20,-12,-28]]},
+{q:"Investors want you back. What do you do?",c:[["Negotiate your return with their support.",120,-15,-8,-8],["Announce a new start-up.",190,-10,-5,-22],["Offer the board a written disclosure plan.",40,8,8,8]]},
+{q:"You are in the building as a guest. What do you ask for?",c:[["A new board. If not, join Microsoft.",185,-10,-5,-12],["Return under independent oversight.",30,10,10,10],["Walk out of the talks.",200,-12,-6,-18]]},
+{q:"The staff letter is spreading. How do you use it?",c:[["Let it grow, and keep Microsoft open.",240,-8,-15,-15],["Ask staff to pause while a mediator works.",20,10,8,12],["Invite everyone to Microsoft now.",280,-18,-18,-30]]},
+{q:"What settlement do you accept?",c:[["Return without a board seat, with a review.",-690,8,3,35],["The same, plus written disclosure duties.",-720,18,20,30],["Stay at Microsoft with the team.",700,-12,-10,-45]]}];
+/* Track E: one employee. side = where your own dot stands */
+const E=[
+{q:"Your CEO is gone and nobody says why. What do you do?",side:[0,1,0],c:["Wait and ask your manager for reasons.","Back Altman in public.","Quietly start a job search."]},
+{q:"Colleagues are posting hearts. What do you do?",side:[1,0,0],c:["Post a heart too.","Ask the board a question in writing.","Stay silent."]},
+{q:"A second interim CEO is announced. What do you do?",side:[1,0,1],c:["Side with the Altman camp.","Give the new CEO a chance.","Call a recruiter at a competitor."]},
+{q:"The letter reaches you. Do you sign?",side:[1,0,1],c:["Sign, like almost everyone.","Do not sign, and explain why privately.","Ask Microsoft for a contract now."]},
+{q:"Altman is coming back. What do you do?",side:[0,0,1],c:["Stay and move on.","Stay, and ask for a staff hotline.","Leave anyway."]}];
+/* Payoffs: pay[day][choice] = list of [metric, probability %, if it happens, otherwise]. Our model. */
+const X=(n,v,o={})=>({n,v,max:100,pre:"",suf:"",...o});
+const ROLES=[
+{id:"a",tr:"a",name:"Sam Altman",job:"CEO and director",
+facts:[["Equity","No direct equity, as you told the Senate{{stake}}"],["Indirect stake","Via a Y Combinator fund. Not told to the Senate, size never public{{fund}}"],["Salary","$76,001 a year in the 2023 filing"],["Company valuation","$86B in the share sale then under way{{sale}}"],["At stake","Your job, your seat, control of OpenAI"]],
+goal:"On paper you own nothing. You play for control.",
+mx:[X("Control",60),X("Reputation",60),X("Staff loyalty",60)],
+pay:[[[[2,80,15,-5],[0,100,-10]],[[1,60,8,0]],[[2,40,15,-10],[1,70,-20,0]]],
+[[[0,60,12,-5]],[[0,50,10,-15],[2,50,10,0]],[[1,70,12,0],[0,100,-5]]],
+[[[0,50,15,-10]],[[1,70,10,0],[0,60,8,0]],[[0,30,15,-20]]],
+[[[2,90,15,0],[0,70,12,-8]],[[1,80,12,0],[2,40,-8,0]],[[2,60,12,-12],[0,100,-10]]],
+[[[0,90,20,0],[1,50,8,-8]],[[0,80,12,0],[1,80,18,0]],[[0,60,-25,10]]]]},
+{id:"i",tr:"b",name:"Ilya Sutskever",job:"Director, co-founder and chief scientist",
+facts:[["Equity","About $4B vested (press report on court messages){{seven}}"],["Salary","Not verified"],["Company valuation","$86B in the share sale then under way{{sale}}"],["At stake","Your stake, your research and friends on both sides"]],
+goal:"You are the only one of the four with a fortune inside the company.",
+mx:[X("Stake",4,{pre:"$",suf:"B",max:6}),X("Research influence",60),X("Team relations",60)],
+pay:[[[[0,60,-.8,0],[2,80,-20,0]],[[0,40,-.4,0],[2,50,-8,0]],[[2,60,-5,5]]],
+[[[2,70,-15,0]],[[2,70,12,-5]],[[1,50,-8,0]]],
+[[[0,60,-.8,0],[2,60,-12,0]],[[2,60,10,0]],[[1,60,-15,0],[0,70,.5,0]]],
+[[[2,70,20,-5],[1,100,-15]],[[2,70,12,0],[0,50,.4,0]],[[2,90,-25,0],[0,70,-.8,0]]],
+[[[0,90,1,0],[1,70,-20,0]],[[0,80,.8,0],[1,60,8,-8]],[[0,80,-2.5,-.5]]]],
+alt:{3:{0:"Sign the staff letter and say you regret it."}}},
+{id:"d",tr:"b",name:"Adam D'Angelo",job:"Independent director, Quora CEO",
+facts:[["Equity","None: independent directors hold no OpenAI equity"],["Board pay","Unpaid seat (reported)"],["Outside interest","Quora and its AI product Poe{{poe}}"],["At stake","Your seat, and proof that you are independent"]],
+goal:"You are the bridge. You could be the only one who stays.",
+mx:[X("Board seat",60),X("Independence",60),X("Quora and Poe",60)],
+pay:[[[[1,40,8,-12],[2,40,-8,0]],[[1,70,10,0]],[[1,60,8,0]]],
+[[[1,60,-10,0]],[[1,60,10,0],[0,50,5,0]],[[1,70,-12,0]]],
+[[[0,50,-12,5]],[[0,60,12,0]],[[1,80,-15,0],[0,50,10,0]]],
+[[[0,50,-12,8]],[[0,70,15,0],[1,60,8,0]],[[2,50,-12,0],[0,70,-15,0]]],
+[[[0,85,20,-20]],[[0,70,15,0],[1,70,15,0]],[[0,100,-30],[2,30,10,-10]]]]},
+{id:"h",tr:"b",name:"Helen Toner",job:"Independent director, Georgetown",
+facts:[["Equity","None: independent directors hold no OpenAI equity"],["Board pay","Unpaid seat (reported)"],["Main job","AI policy research at Georgetown"],["At stake","The safety mission and your public credibility"]],
+goal:"Nothing here pays you. You play for the mission.",
+mx:[X("Board seat",60),X("Safety mission",60),X("Public credibility",60)],
+pay:[[[[1,40,15,-10],[2,60,-10,0]],[[1,60,12,0]],[[1,60,8,0],[2,60,8,0]]],
+[[[2,70,-12,0]],[[2,70,15,-5]],[[1,60,-10,0]]],
+[[[0,60,-12,0]],[[1,50,8,0]],[[1,80,-18,0]]],
+[[[0,70,-15,0],[1,30,8,-8]],[[1,60,10,0],[0,40,8,-8]],[[2,90,-20,0]]],
+[[[0,90,-30,0],[1,30,8,-8]],[[1,80,20,0],[0,70,-20,0]],[[1,20,15,-25],[0,100,-30]]]]},
+{id:"t",tr:"b",name:"Tasha McCauley",job:"Independent director, RAND",
+facts:[["Equity","None: independent directors hold no OpenAI equity"],["Board pay","Unpaid seat (reported)"],["Main job","Adjunct senior management scientist at RAND"],["At stake","The nonprofit's authority over the company"]],
+goal:"You play for governance: can a board still say no?",
+mx:[X("Board seat",60),X("Nonprofit control",60),X("Professional standing",60)],
+pay:[[[[1,50,12,-15]],[[1,70,12,0],[2,50,5,0]],[[1,70,10,0]]],
+[[[2,60,-10,0]],[[1,60,10,0],[2,50,5,0]],[[1,70,-15,0]]],
+[[[1,40,8,-12]],[[1,60,10,0]],[[1,100,-25]]],
+[[[0,70,-15,0],[1,40,8,-10]],[[1,60,12,0]],[[2,80,-20,0]]],
+[[[0,90,-30,0],[1,60,-10,0]],[[0,70,-20,0],[1,80,20,0]],[[0,100,-30],[1,20,20,-25]]]]},
+{id:"e",tr:"e",name:"A random employee",job:"Fictional engineer, one dot out of 770",
+facts:[["Equity","$500k of profit units (our example)"],["Salary","$250k a year (our example)"],["Company valuation","$86B in the share sale then under way{{sale}}"],["At stake","The sale that could turn your units into cash, and your job"]],
+goal:"You have no vote. You do have a payday at risk and colleagues watching.",
+mx:[X("Your units",500,{pre:"$",suf:"k",max:700}),X("Job security",60),X("Belonging",60)],
+pay:[[[[1,50,-5,0]],[[2,70,15,-5],[1,30,-10,0]],[[1,60,10,0],[2,30,-8,0]]],
+[[[2,90,12,0]],[[2,50,-10,0],[1,40,-5,5]],[]],
+[[[2,70,10,0],[0,50,-60,0]],[[1,60,8,0],[2,70,-12,0]],[[1,70,15,0],[2,50,-12,0]]],
+[[[2,95,20,0],[0,60,80,-100]],[[2,80,-20,0]],[[1,70,20,-10],[0,60,-120,0]]],
+[[[0,85,100,0]],[[0,85,90,0],[2,60,8,0]],[[0,60,-250,0],[1,60,10,-15]]]]}];
+const THESIS="The board had the right to decide but lost the power to lead, because it treated a trust problem as a legal one.";
+/* One main theory per day, a second lens as contrast, and the link to the next day */
+const W=[
+{cause:"Power misread",th:"Bases of social power",ref:"French & Raven (1959), Session 4",
+con:"Legitimate power comes from a position. Referent power comes from people's attachment to a person. They can belong to different people.",
+ev:"Four votes were enough to remove Altman. Within three days a reported 745 of about 770 staff asked for him back.",
+ex:"The vote took away his legitimate power and left his referent power intact. The board won the decision and lost the followers.",
+ln:"Bounded rationality, Session 7",lt:"Decision-makers stop at a good-enough answer. The review found that the board did not anticipate the disruption. It asked “is he candid?” and not “what happens next?”",
+nx:"Staff did not see the decision as legitimate, so on Saturday they wanted reasons."},
+{cause:"Silence",th:"Organizational justice",ref:"Informational justice and trust, Session 1",
+con:"People judge more than the outcome. Informational justice is whether they get honest and sufficient reasons. Trust rests on ability, benevolence and integrity.",
+ev:"Staff got one short public reason, then a message ruling out malfeasance. No detailed explanation followed.",
+ex:"The board acted over candor, then gave few reasons itself. That hurt its own perceived integrity, whatever the merit of its case.",
+ln:"Triggers and the hand model, Session 3",lt:"Justice explains the judgment. Siegel explains the speed: lost certainty and belonging can make people “flip their lid”. Emotion has to be acknowledged before facts.",
+nx:"With no reasons to rely on, staff turned to the leaders they already knew."},
+{cause:"No trusted leader",th:"Leader-member exchange",ref:"LMX, Session 5",
+con:"Leaders build a different relationship with each member. High-quality exchange brings trust and extra effort. Low-quality exchange stays formal.",
+ev:"Murati, an insider, was replaced by Shear, an outsider. That made two interim CEOs in three days.",
+ex:"Shear had the title but no existing exchange with staff. The relationships that could calm the company were on Altman's side.",
+ln:"Political games, Mintzberg (1983), Session 4",lt:"LMX looks at relationships. Mintzberg looks at moves: Altman's side built alliances, staff began an insurgency, and two rival camps formed.",
+nx:"A leader nobody knew met a group that was already organizing."},
+{cause:"Staff revolt",th:"Conformity",ref:"Asch, situational factors, Session 7",
+con:"People adjust their choice to match a group, even against their own judgment. Pressure grows when the majority is visible.",
+ev:"More than 500 signatures became a reported 745 of about 770. Sutskever, who had voted to fire Altman, signed too.",
+ex:"Each visible name made refusing harder. Conformity cannot explain it all: Microsoft's job offer and the share sale gave real reasons to sign.",
+ln:"Self-justification, Session 7, and ELM, Session 4",lt:"Sutskever reversed himself, while self-justification predicts defending a past choice. ELM adds two routes: careful reasons (central) or the number of names (peripheral).",
+nx:"The board had no one left to lead, so it had to settle."},
+{cause:"Return, weak terms",th:"Levels of culture",ref:"Schein, Session 8",
+con:"Culture has three levels: visible artifacts, espoused values, and basic assumptions that people rarely state. Under stress, assumptions win.",
+ev:"Espoused value: a nonprofit board protects the mission. In practice Altman returned in five days and most of the board left.",
+ex:"The crisis suggests a deeper assumption: the mission is the leader and the team. The rule existed as an artifact without shared belief behind it.",
+ln:"Kant vs Mill, Session 7",lt:"Duty: a board that sees a lack of candor must act. Consequences: an act that empties the company protects nobody. A return with conditions answers both.",
+nx:"Trust was never repaired. That is why our recommendations start before the vote."}];
+/* What theory predicts for each option, by track */
+const PR={b:[
+["Formal power used alone removes the position and leaves the attachment. Expect staff to follow the person.","Briefing allies first adds reasons and support to formal power, so fewer people feel forced to choose a side.","A review delays an irreversible act until more facts are in. It is an answer to bounded rationality."],
+["Silence is low informational justice. People build their own explanation, and it is rarely kind.","Emotion first, reasons second. This meets informational justice and lowers the threat response.","Reasons from a third party do little for the board's integrity. The one who decides must explain."],
+["A stranger starts with low-quality exchange: people comply with the title and give little more.","Murati already has exchange with staff, so the board can borrow her trust while talks continue.","Ties are restored, and staff learn that the board's authority has no effect."],
+["Holding out with no new reasons fits self-justification and leaves the pressure of the majority unanswered.","A neutral channel lets people speak in private, which weakens conformity and brings reasons back.","A threat is coercive power. At best it buys compliance, and it spends what trust remains."],
+["The leader is back, but the espoused value of oversight still has no practice behind it.","Rules, review and a hotline turn an espoused value into daily practice. Duty and consequences both count.","The principle is kept and the consequences ignored: the team leaves."]],
+a:[
+["Referent power works without a title. A warm message reminds people whom they follow.","Asking in private protects the relationship and gives the board a chance to show informational justice.","An attack signals low integrity. It may rally supporters and hardens the rival camps."],
+["Alliance-building: the investors' resources add to your own referent power.","Leaving turns influence into exit. Supporters must choose between you and the company.","Disclosure speaks to integrity, the part of trust that was in doubt."],
+["An ultimatum backed by an exit option is coercive power. It works, and it deepens the camps.","Accepting oversight shows integrity while keeping your exchange with staff.","Walking out leaves followers without a leader they trust in the building."],
+["A visible majority does the work for you: conformity raises the cost of not signing.","Asking for calm uses referent power for the organization, and lowers the pressure to conform.","Strong exchange can carry a team out of the door. The company pays."],
+["You regain the position. The assumption that the mission depends on you grows stronger.","Written duties make candor a practice. This repairs integrity and not only position.","The group follows the person, and the espoused mission loses its organization."]],
+e:[
+["You look for reasons: that is informational justice from below. One voice rarely gets an answer.","You act on attachment, before you have facts. Referent power is at work on you.","Low certainty pushes people to protect themselves first."],
+["A heart is cheap and visible. It signals belonging, and adds to the pressure on others.","You take the central route: you want arguments before you choose.","Silence protects your job and lets the visible majority define the norm."],
+["You stay with the leader who already invested in you, as LMX predicts.","You give a stranger time to build exchange. Few others do.","Exit: the exchange is broken with both sides."],
+["You follow 745 others. It may be conformity, or a fair reading of your interests. Ask which.","You resist the majority, the hard case in Asch. You pay in belonging.","Your own expectancy decides: a safer reward elsewhere."],
+["The crisis ends, and nothing changes in how the next one would be handled.","You ask for a practice behind the espoused value. This is how culture changes.","Trust lost in five days is not restored by a return."]]};
+const PI="Reversing in public goes against self-justification. Joining 745 names also looks like conformity. His reasons decide which reading is right.";
+const pred=()=>role.alt&&role.alt[r]&&picks[r]===0&&role.id==="i"?PI:PR[role.tr][r][picks[r]];
+/* finding, theory, action, owner and deadline, measure, obstacle */
+const REC=[
+["The vote removed a title and left the influence","Bases of power, bounded rationality","Map formal power, informal influence and personal stakes before any CEO vote","Board chair, 30 days","Map on file for every CEO decision","Directors may find it political: use an outside facilitator"],
+["No detailed reasons were given","Informational justice, triggers","24-hour protocol: partners, executives, then an all-staff Q&A","Board secretary, 45 days","70% of staff say they understand the reasons","Legal limits: say what cannot be shared, and why"],
+["Two interim CEOs in three days","LMX, political games","Name an emergency CEO whom staff already trust","Board and HR, 60 days","70% trust in the named person, checked yearly","It may signal rivalry: name a role, review it yearly"],
+["A public bloc, and no private way to disagree","Conformity, self-justification","Secret first vote, assigned devil's advocate, 48-hour review except in emergencies","Board chair, next CEO decision","Every CEO vote minuted with its counter-case","Time pressure: allow an emergency route"],
+["Oversight was a stated value with little practice","Schein, Kant and Mill, integrity","CEO disclosure duty, quarterly audit, protected staff hotline (adopted in 2024)","Audit committee, 90 days","Audit delivered each quarter, hotline answered within 10 days","CEO resistance: make it a contract term"]];
+/* Extra information. k = roles that plausibly knew it in November 2023 (our judgment); "" = nobody yet */
+const INFO={
+stake:{k:"a",t:"In May 2023 Altman told the Senate he had no equity. He held an indirect stake through a Y Combinator fund. Its size was never made public. He confirmed it in court in 2026, called himself a passive owner and said the omission was not intentional. He had also held a sliver through a Sequoia fund, later sold."},
+fund:{k:"a",t:"Altman legally owned the OpenAI Startup Fund ($175M in commitments). Toner says he did not tell the board. OpenAI says it was a temporary arrangement with no financial interest for him. Control was transferred in 2024."},
+memo:{k:"idht",t:"Sutskever wrote a 52-page memo on Altman's alleged dishonesty for the independent directors. It became public through the Musk lawsuit in 2025."},
+chatgpt:{k:"idht",t:"Toner says the board was not told before ChatGPT launched in November 2022, and learned about it on Twitter. She made this public in 2024."},
+seven:{k:"",t:"In May 2026 Sutskever testified that his stake was then worth about $7B. The $4B figure for 2023 comes from one press report on court messages."},
+sale:{k:"ai",t:"Thrive Capital was leading the sale, due to end in early December. The money had not been wired, and Thrive reportedly told OpenAI that Altman's departure would affect its actions."},
+poe:{k:"ad",t:"Poe is an AI chatbot platform. Altman later said D'Angelo had always been very clear about the potential conflict."},
+murati:{k:"aidht",t:"Murati reportedly told a director that she planned to bring Altman back. The directors then chose another interim CEO."},
+jobs:{k:"aidhte",t:"The letter says Microsoft assured staff there were positions for all of them. On Tuesday its technology chief publicly offered to match their pay."},
+review:{k:"",t:"In March 2024 the law-firm review found a breakdown in trust. It said the board acted within its discretion, and that Altman's conduct did not mandate removal."},
+after:{k:"",t:"The share sale went ahead. Staff got an extra month to decide, reported on 30 November."}};
+const opened=new Set(),tip=s=>s.replace(/\{\{(\w+)\}\}/g,(_,k)=>`<span class="tip"><button class="i" type="button" data-i="${k}" aria-label="More information" aria-expanded="false">i</button></span>`);
+let pop=null,popT=0;
+function shut(){clearTimeout(popT);if(pop){pop.b.setAttribute("aria-expanded","false");pop.e.remove();pop=null}}
+function openTip(b){clearTimeout(popT);if(pop&&pop.b===b)return;shut();const e=document.createElement("span");e.className="pop";b.parentNode.append(e);pop={b,e};b.setAttribute("aria-expanded","true");fill()}
+function fill(){const k=pop.b.dataset.i,n=INFO[k],knows=role&&n.k.includes(role.id),e=pop.e;
+e.innerHTML=knows?n.t:opened.has(k)?`<em>Your character does not know this.</em>${n.t}`:`<strong>Your character is not supposed to know.</strong><button class="rv" type="button" data-v="${k}">Reveal anyway</button>`;
+const a=pop.b.getBoundingClientRect(),vw=document.documentElement.clientWidth,w=Math.min(340,vw-32);e.style.width=w+"px";e.style.left=clamp(a.left+a.width/2-w/2,16,Math.max(16,vw-w-16))+"px";
+const h=e.offsetHeight;e.style.top=(a.bottom+h+10>innerHeight&&a.top-h-6>0?a.top-h-6:a.bottom+6)+"px"}
+function tipEvents(){const P=$("panel");
+P.addEventListener("mouseover",e=>{const t=e.target.closest(".tip");if(t)openTip(t.querySelector(".i"))});
+P.addEventListener("mouseout",e=>{const t=e.target.closest(".tip");if(t&&!t.contains(e.relatedTarget)){clearTimeout(popT);popT=setTimeout(shut,250)}});
+P.addEventListener("focusin",e=>{if(e.target.matches(".i"))openTip(e.target)});
+P.addEventListener("focusout",e=>{if(pop&&e.relatedTarget&&!pop.b.parentNode.contains(e.relatedTarget))shut()});
+document.addEventListener("pointerdown",e=>{if(!e.target.closest(".tip"))shut()});
+addEventListener("scroll",shut,{passive:true});addEventListener("resize",shut);
+addEventListener("keydown",e=>{if(e.key==="Escape")shut()})}
+const $=i=>document.getElementById(i);
+let role=null,r=0,ph="intro",away=0,m=[50,50,50],mine=[],picks=[],rolls=[];
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x)),rd=x=>Math.round(x*10)/10;
+const fmt=(k,v)=>{const q=role.mx[k];return q.pre+rd(v)+q.suf},sgn=(k,v)=>{const q=role.mx[k];return v?(v>0?"+":"−")+q.pre+rd(Math.abs(v))+q.suf:"nothing"};
+const cls=v=>v>0?"up":v<0?"dn":"soft";
+/* A forecast line: sure, all-or-nothing, or bonus/malus */
+const fc=([k,p,a,b])=>`<span class="fc"><b>${role.mx[k].n}</b> ${p===100?`<span class="${cls(a)}">${sgn(k,a)} for sure</span>`:`<span class="${cls(a)}">${p}% ${sgn(k,a)}</span> / <span class="${cls(b)}">${100-p}% ${sgn(k,b)}</span>`}</span>`;
+/* Option 1 is always the historical line. h = documented choice, c = closest to history */
+const HB={b:"hhhhh",a:"chhch",e:"ccccc"},badge=i=>i?"":`<span class="hb">${HB[role.tr][r]==="h"?"Historical choice":"Closest to history"}</span>`;
+const track=()=>{const x=D[r];if(role.tr==="a")return{q:A[r].q,c:A[r].c};if(role.tr==="e")return{q:E[r].q,c:E[r].c.map(t=>[t,...x.c[0].slice(1)])};
+const o=role.alt&&role.alt[r]||{};return{q:x.q,c:x.c.map((c,i)=>[o[i]||c[0],...c.slice(1)])}};
+const N=770,dots=[],rank=[...Array(N).keys()];let seed=7;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
+for(let i=N-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[rank[i],rank[j]]=[rank[j],rank[i]]}
+for(let i=0;i<N;i++)dots.push({k:0});
+const ME=412,cv=$("cv"),cx=cv.getContext("2d"),slow=matchMedia("(prefers-reduced-motion: reduce)").matches;
+function draw(){const w=cv.clientWidth,h=cv.clientHeight,p=devicePixelRatio||1;if(!w||!h)return;if(cv.width!==Math.round(w*p)||cv.height!==Math.round(h*p)){cv.width=Math.round(w*p);cv.height=Math.round(h*p)}
+cx.setTransform(p,0,0,p,0,0);cx.clearRect(0,0,w,h);const rows=14,cols=55,bw=w*.46,sx=bw/cols,sy=(h-12)/rows,rad=Math.max(1.1,Math.min(sx,sy)*.36),emp=role&&role.tr==="e";let my;
+for(let i=0;i<N;i++){const o=dots[i];let go=rank[i]<away?1:0;if(emp&&i===ME)go=picks.length?E[picks.length-1].side[picks[picks.length-1]]:0;
+o.k+=slow?go-o.k:(go-o.k)*(.025+.05*(i%7)/7);
+const x=(i%cols+.5)*sx+o.k*(w-bw),y=8+(Math.floor(i/cols)+.5)*sy-Math.sin(o.k*Math.PI)*8*(i%3-1);
+if(emp&&i===ME){my=[x,y];continue}
+cx.fillStyle=o.k>.5?"#bc4c00":"#0969da";cx.beginPath();cx.arc(x,y,rad,0,7);cx.fill()}
+if(my){cx.fillStyle="#1f2328";cx.beginPath();cx.arc(my[0],my[1],Math.max(4,rad*1.9),0,7);cx.fill()}}
+function hud(){const play=!["intro","stakes"].includes(ph);$("days").innerHTML=D.map((x,i)=>`<li class="${ph==="end"||ph==="sum"||play&&i<r?"done":play&&i===r?"now":""}">${x.d}${play&&(i<r||ph==="why"||ph==="sum"||ph==="end")&&i<=r?`<b>${W[i].cause}</b>`:""}</li>`).join("");
+const done=picks.length===5,tr=role&&role.tr,n=picks.length,es=tr==="e"?(n?E[n-1].side[picks[n-1]]:0):-1,ys=" (your side)";$("stay").textContent=`${N-away} ${done?"stay at OpenAI":"with the board"+(tr==="b"||es===0?ys:"")}`;
+$("away").textContent=`${away} ${done?"ready to leave":"with Sam Altman"+(tr==="a"?" (you)":es===1?ys:"")}`;
+$("meters").innerHTML=["Trust in the board","Board legitimacy","Company stability"].map((n,i)=>`<div>${n} <b>${m[i]}</b><i><em style="width:${m[i]}%"></em></i></div>`).join("")+(role?`<p class="you"><b>${role.name}</b> ${role.mx.map((q,k)=>`<span>${q.n} <b>${fmt(k,mine[k])}</b></span>`).join("")}</p>`:"");
+$("next").hidden=["intro","vote","end"].includes(ph);$("game").classList.toggle("ending",ph==="end"||ph==="sum");$("game").classList.toggle("study",ph==="why")}
+/* Back: each screen is saved as it appears. Going back past a vote undoes it. */
+let past=[],cur=null;
+const snap=()=>({role,r,ph,away,m:[...m],mine:[...mine],picks:[...picks],rolls:[...rolls]});
+function back(){const b=past.pop();if(!b)return;if(b.ph==="intro"){home();return}({role,r,away,m,mine,picks,rolls}=b);cur=null;show(b.ph)}
+function show(p){if(cur)past.push(cur);shut();ph=p;const x=D[r],P=$("panel");
+$("head").hidden=p!=="intro";
+if(p==="intro")$("head").innerHTML=`<h1>Five Days at OpenAI</h1><p>November 2023. The board fires its CEO, and five days later he is back. Each dot is one employee. <b>Our argument:</b> ${THESIS} Play to test it.</p>`,P.innerHTML=`<h2>Choose your character</h2><div class="roles">${ROLES.map((q,i)=>`<button class="choice" id="r${i}" data-r="${i}"><b>${i+1}</b><span><strong>${q.name}</strong><br>${q.job}</span></button>`).join("")}</div><p class="soft">Press 1 to 6 to choose. Take all the time you need: vote with 1, 2 or 3, and press Space or Continue to move on. Forecasts, scores and dot positions are our model. Documented facts are marked “What happened”. Hover an <span class="i demo">i</span> for more.</p>`;
+if(p==="stakes")P.innerHTML=`<h2>You are ${role.name}</h2><p>${role.goal}</p><div class="two"><div><h3>What you have</h3><dl>${role.facts.map(f=>`<div><dt>${f[0]}</dt><dd>${tip(f[1])}</dd></div>`).join("")}</dl></div><div><h3>What you play for <span class="soft">(our model)</span></h3>${role.mx.map((q,k)=>`<div class="mx">${q.n} <b>${fmt(k,q.v)}</b><i><em style="width:${100*q.v/q.max}%"></em></i></div>`).join("")}</div></div><p class="so"><b>Expectancy theory, S6:</b> before each choice you see a forecast, the odds and the reward. The best odds for you may not be the best for the company.</p>`;
+if(p==="scene")P.innerHTML=`<h2>${x.t}</h2><p>${tip(x.s)}</p>`;
+if(p==="vote"){const t=track();P.innerHTML=`<h2>${t.q}</h2><div class="choices">${t.c.map((c,i)=>`<button class="choice" id="c${i}" data-c="${i}"><b>${i+1}</b><span>${badge(i)}${c[0]}${role.pay[r][i].map(fc).join("")||'<span class="fc soft">No effect on you</span>'}</span></button>`).join("")}</div>`}
+if(p==="read"){const t=track(),k=picks[r];P.innerHTML=`<h2>${t.c[k][0]}</h2><p class="got"><b>For you:</b> ${rolls.map(a=>`${role.mx[a[0]].n} <b class="${cls(a[1])}">${sgn(a[0],a[1])}</b>`).join(", ")||"No effect on you"}</p><div class="two"><div><h3>What theory says about your choice</h3><p>${pred()}</p></div><div><h3>What happened</h3><p>${tip(x.h)}</p></div></div>`}
+if(p==="why"){const w=W[r];P.innerHTML=`<h2>${w.th} <span class="cite">${w.ref}</span></h2><div class="steps"><div><h3>Concept</h3><p>${w.con}</p></div><div><h3>Evidence in the case</h3><p>${w.ev}</p></div><div><h3>What it explains</h3><p>${w.ex}</p></div></div><p class="lens"><b>Another lens: ${w.ln}.</b> ${w.lt}</p><p class="so"><b>Lesson:</b> ${x.so} <b>In history, then:</b> ${w.nx}</p><p class="soft"><b>Mirror for our group:</b> ${x.g}</p>`}
+if(p==="sum"){const sc=score(m),g=role.mx.reduce((a,q,k)=>a+(mine[k]-q.v)/q.max,0);P.innerHTML=`<h2>${role.name}: ${g>.02?"you came out ahead":g<-.02?"you came out behind":"you broke even"}</h2><p>${role.mx.map((q,k)=>`${q.n} <b>${fmt(k,q.v)} → <span class="${cls(rd(mine[k]-q.v))}">${fmt(k,mine[k])}</span></b>`).join(" · ")} · Board and company score <b>${sc}/100</b>${role.tr==="e"?"":` (history ${hist()}/100)`}</p><p><b>What your route shows.</b> ${role.tr==="e"?"The company's result was the same whatever you did. One employee cannot move the room, and 745 together can.":g>.02&&sc<50?"You gained while the organization lost: self-interest over collective good (S4).":g<=.02&&sc>=50?"You paid for a result that served the organization. Expectancy alone would not predict that choice: duty or mission can (Kant, S7).":g>.02?"Your interest and the organization's pointed the same way. Good governance tries to make that the normal case.":"Your choices cost both you and the organization: a lose-lose conflict (S4)."}</p><p class="so"><b>Our argument.</b> ${THESIS}</p><ol class="chain">${W.map((w,i)=>`<li><b>${w.cause}</b><span>${w.th}</span><em>${D[i].d}</em></li>`).join("")}</ol><p><b>Why it holds.</b> Each step has its own evidence, and each one made the next more likely. Power explains why the vote was not enough, justice why many staff rejected it, exchange why it was hard to calm them, conformity why it spread, and culture why the rule gave way.</p><p class="soft">Limits: other factors mattered, such as the share sale and Microsoft's offer. Our scores illustrate the argument. They do not prove it.</p>`}
+if(p==="end")P.innerHTML=`<h2>What OpenAI's board should do next</h2><div class="tw"><table><thead><tr><th>Finding</th><th>Theory</th><th>Action</th><th>Owner, deadline</th><th>Measure</th><th>Obstacle and answer</th></tr></thead><tbody>${REC.map((q,i)=>`<tr>${q.map((c,j)=>j?`<td>${c}</td>`:`<th scope="row"><em>${D[i].d}</em>${c}</th>`).join("")}</tr>`).join("")}</tbody></table></div><p class="soft">Targets and deadlines are our proposals.</p><button class="go" id="again">Choose another role</button><details><summary>Sources and limits</summary><p>Events: <a href="https://techcrunch.com/2024/01/05/a-timeline-of-sam-altmans-firing-from-openai-and-the-fallout">TechCrunch</a>, <a href="https://www.axios.com/2023/11/22/openai-microsoft-sam-altman-ceo-chaos-timeline">Axios</a>, <a href="https://en.wikipedia.org/wiki/Removal_of_Sam_Altman_from_OpenAI">Wikipedia</a>, <a href="https://openai.com/index/review-completed-altman-brockman-to-continue-to-lead-openai/">OpenAI review summary</a>. Stakes: <a href="https://www.forbes.com/sites/aliciapark/2026/05/12/sam-altman-testifies-he-owns-one-third-of-helion-energy-worth-165-billion/">Altman's indirect stake, Forbes</a> and <a href="https://techcrunch.com/2026/05/17/why-trust-is-a-big-question-at-the-elon-musk-openai-trial/">TechCrunch</a> (he testified that omitting it was not intentional), <a href="https://fortune.com/2024/11/20/openai-ceo-sam-altman-salary-76001/">Altman's pay, Fortune</a>, <a href="https://www.calcalistech.com/ctechnews/article/hyqfg1a411x">Sutskever's vested equity, Calcalist</a>, <a href="https://www.cnbc.com/2023/11/18/heres-whos-on-openais-board-the-group-behind-sam-altmans-ouster.html">directors, CNBC</a>, <a href="https://www.bloomberg.com/news/articles/2023-11-30/openai-tender-for-employee-shares-is-on-and-extended-to-jan-5">share sale, Bloomberg</a>, <a href="https://openai.com/our-structure/">OpenAI structure</a>. Signature counts vary. The employee is fictional. Who knew what on the info icons is our judgment. Details: <a href="https://fortune.com/2024/05/29/openai-sam-altman-helen-toner-ted-ouster-non-profit-board/">Toner, Fortune</a>, <a href="https://www.axios.com/2024/02/15/sam-altman-openai-startup-fund">Startup Fund, Axios</a>, <a href="https://www.lesswrong.com/posts/9mp6vBwxitoZcvDmG/ilya-sutskever-deposition-transcript">Sutskever deposition</a>, <a href="https://bloomberg.com/news/articles/2026-05-11/sutskever-says-his-openai-stake-worth-about-7-billion">his 2026 testimony, Bloomberg</a>. Every forecast and every motive is our model, never a statement about what these people earned or thought. Theory: Organizational Behavior, sessions 1 to 8, N. El Attar.</p></details>`;
+hud();$("back").hidden=p==="intro";cur=snap()}
+const gain=n=>n>0?Math.round(n*.7):n,score=a=>Math.round((a[0]+a[1]+a[2])/3);
+function hist(){let a=[50,50,50];D.forEach(x=>{a=a.map((v,i)=>clamp(v+gain(x.c[0][i+2]),0,100))});return score(a)}
+function pick(k){if(ph!=="vote")return;const c=track().c[k];picks[r]=k;away=clamp(away+c[1],0,N);m=m.map((v,i)=>clamp(v+gain(c[i+2]),0,100));
+rolls=role.pay[r][k].map(([q,p,a,b=0])=>{const d=Math.random()*100<p?a:b,old=mine[q];mine[q]=clamp(rd(old+d),0,role.mx[q].max);return[q,rd(mine[q]-old)]});show("read")}
+function adv(){if(ph==="stakes")show("scene");else if(ph==="scene")show("vote");else if(ph==="read")show("why");else if(ph==="why"){if(r<4){r++;show("scene")}else show("sum")}else if(ph==="sum")show("end")}
+function reset(){r=0;away=0;m=[50,50,50];mine=[];picks=[];rolls=[]}
+function choose(i){reset();opened.clear();role=ROLES[i];mine=role.mx.map(q=>q.v);show("stakes")}
+function home(){reset();role=null;past=[];cur=null;show("intro")}
+$("next").onclick=adv;$("back").onclick=back;
+$("panel").onclick=e=>{const b=e.target.closest("button");if(!b)return;if(b.dataset.i){openTip(b);return}if(b.dataset.v){opened.add(b.dataset.v);const t=pop.b;t.focus();fill();return}if(b.dataset.r)choose(+b.dataset.r);else if(b.dataset.c)pick(+b.dataset.c);else home()};
+addEventListener("keydown",e=>{const n=+e.key;if(ph==="intro"&&n>=1&&n<=6)choose(n-1);else if(n>=1&&n<=3)pick(n-1);else if(e.key===" "&&e.target.tagName!=="BUTTON"){e.preventDefault();if(!e.repeat)adv()}else if(e.key==="ArrowRight"&&!e.repeat)adv();else if(e.key==="ArrowLeft"&&!e.repeat)back()});
+function loop(){draw();requestAnimationFrame(loop)}
+tipEvents();show("intro");requestAnimationFrame(loop);
+</script>
