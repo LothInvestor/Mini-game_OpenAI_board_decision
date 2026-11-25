@@ -4,7 +4,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>
 /* Layout: one projected screen. 770 staff dots cross a room above; the day's decision and its decoding sit below. Single light look by choice (GitHub-style white). */
-:root{--bg:#ffffff;--deep:#f6f8fa;--line:#d1d9e0;--fg:#1f2328;--soft:#59636e;--stay:#0969da;--away:#bc4c00;--good:#1a7f37;--bad:#cf222e;--go:#1f883d;--tint:#ddf4ff;--cream:#fff8e7;--mint:#8fd6a5;--tintline:#54aeff;
+:root{--bg:#ffffff;--deep:#f6f8fa;--line:#d1d9e0;--fg:#1f2328;--soft:#59636e;--stay:#0969da;--away:#bc4c00;--good:#1a7f37;--bad:#cf222e;--go:#1f883d;--tint:#ddf4ff;--cream:#fffdf5;--popline:#0969da;--tintline:#54aeff;
 --disp:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif;--body:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif;color-scheme:light}
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--fg);font:17px/1.4 var(--body)}
@@ -37,7 +37,7 @@ canvas{display:block;width:100%;height:106px}
 .up{color:var(--good)}.dn{color:var(--bad)}.fc.soft{color:var(--soft)}
 .you{grid-column:1/-1;max-width:none;display:flex;flex-wrap:wrap;gap:2px 22px;border-top:1px solid var(--line);padding-top:7px}.you>b{color:var(--stay)}
 dl{margin:6px 0 0;display:grid;gap:5px}dl div{display:grid;grid-template-columns:9.5em 1fr;gap:10px}dt{color:var(--soft)}dd{margin:0}
-.mx{margin-top:7px}.mx i{display:block;height:6px;background:var(--line);margin-top:3px}.mx em{display:block;height:100%;background:var(--stay)}
+.mx{margin-top:7px}.mx>i{display:block;height:6px;background:var(--line);margin-top:3px}.mx em{display:block;height:100%;background:var(--stay)}
 [hidden]{display:none!important}
 #head{display:grid;gap:8px;margin-bottom:14px}#head p,#panel>p{max-width:100ch}
 .got{max-width:none}
@@ -49,9 +49,9 @@ dl{margin:6px 0 0;display:grid;gap:5px}dl div{display:grid;grid-template-columns
 .ending .room .poles{display:none}
 .hb{display:table;border:1px solid var(--stay);color:var(--stay);border-radius:3px;padding:0 7px;margin-bottom:5px;font-size:14px;font-weight:700}
 .tip{white-space:nowrap}.i{display:inline-grid;place-items:center;width:20px;height:20px;padding:0;margin:0 1px 0 6px;border:1.5px solid var(--stay);border-radius:50%;background:none;color:var(--stay);font:700 13px/1 var(--body);vertical-align:2px}.i:hover,.i[aria-expanded="true"]{background:var(--stay);color:var(--deep)}.demo{width:17px;height:17px;margin:0 2px;font-size:11px;vertical-align:1px}
-.pop{position:fixed;z-index:20;display:block;white-space:normal;background:var(--cream);color:var(--fg);border:2px solid var(--mint);padding:12px 14px;border-radius:6px;font:400 15.5px/1.4 var(--body);box-shadow:0 8px 24px var(--line)}.pop em,.pop strong{display:block;font-style:normal;font-weight:700;margin-bottom:5px}
+.pop{position:fixed;z-index:20;display:block;white-space:normal;background:var(--cream);color:var(--fg);border:2px solid var(--popline);padding:12px 14px;border-radius:6px;font:400 15.5px/1.4 var(--body);box-shadow:0 8px 24px var(--line)}.pop em,.pop strong{display:block;font-style:normal;font-weight:700;margin-bottom:5px}
 .story{display:grid;grid-template-columns:1fr 1fr;gap:9px 30px;font-size:15.5px;line-height:1.32}.story>*{min-width:0}.wrap:not(.ending) #panel .story h3{font-size:17px;color:var(--stay)}.story em{font-style:normal;font-weight:700}.story [tabindex]:focus{outline:none}.rv2{margin-top:4px;background:var(--deep);border:1px solid var(--line);border-radius:6px;padding:2px 12px;font-weight:700}
-.rv{display:block;background:var(--bg);color:var(--fg);border:1px solid var(--mint);border-radius:4px;padding:7px 13px;margin-top:8px;font-weight:700}
+.rv{display:block;background:var(--bg);color:var(--fg);border:1px solid var(--popline);border-radius:4px;padding:7px 13px;margin-top:8px;font-weight:700}
 .so{background:var(--tint);color:var(--fg);border:1px solid var(--tintline);padding:10px 15px;border-radius:4px;max-width:none}
 .go{justify-self:start;background:var(--go);color:var(--bg);border:0;border-radius:6px;font-weight:700;font-size:20px;padding:12px 26px}
 .recs{margin:0;padding-left:24px;display:grid;gap:7px}.recs li::marker{color:var(--stay);font-weight:700}
@@ -151,7 +151,7 @@ pay:[[[[1,50,12,-15]],[[1,70,12,0],[2,50,5,0]],[[1,70,10,0]]],
 [[[1,40,8,-12]],[[1,60,10,0]],[[1,100,-25]]],
 [[[0,70,-15,0],[1,40,8,-10]],[[1,60,12,0]],[[2,80,-20,0]]],
 [[[0,90,-30,0],[1,60,-10,0]],[[0,70,-20,0],[1,80,20,0]],[[0,100,-30],[1,20,20,-25]]]]},
-{id:"e",tr:"e",name:"A random employee",job:"Fictional engineer, one dot out of 770",
+{id:"e",tr:"e",name:"Garry, the random employee",job:"Fictional engineer, one dot out of 770",
 facts:[["Equity","$500k of profit units (our example)"],["Salary","$250k a year (our example)"],["Company valuation","$86B in the share sale then under way{{sale}}"],["At stake","The sale that could turn your units into cash, and your job"]],
 goal:"You have no vote. You do have a payday at risk and colleagues watching.",
 mx:[X("Your units",500,{pre:"$",suf:"k",max:700}),X("Job security",60),X("Belonging",60)],
@@ -237,6 +237,35 @@ murati:{k:"aidht",t:"Murati reportedly told a director that she planned to bring
 jobs:{k:"aidhte",t:"The letter says Microsoft assured staff there were positions for all of them. On Tuesday its technology chief publicly offered to match their pay."},
 review:{k:"",t:"In March 2024 the law-firm review found a breakdown in trust. It said the board acted within its discretion, and that Altman's conduct did not mandate removal."},
 after:{k:"",t:"The share sale went ahead. Staff got an extra month to decide, reported on 30 November."}};
+/* Context behind each question, shown next to it. Written from what that character knows. */
+const QC={b:[
+"A board can remove the CEO by majority vote. Firing him takes effect at once. Briefing partners first means telling a few people before the public. Leave means he steps aside while outsiders check the facts.",
+"Staff have only seen the short public statement. A Q&A is a meeting where they question the board directly. The investors want Altman back, so letting them speak leaves the explanation to the other side.",
+"An interim CEO runs the company for a while. Shear co-founded Twitch and does not work at OpenAI. Murati is OpenAI's technology chief. A mediator is a neutral person who helps two sides reach a deal.",
+"Staff are adding their names to an open letter: if the board does not resign, they may join Microsoft. Delegates would speak for them. Breaking ranks means a director publicly leaves the board's position. Regretting the vote in public is one way to do it.",
+"A settlement is the deal that ends the conflict. A new initial board is a small group that starts again and chooses other directors later. Written duties are promises the CEO signs. Refusing means most staff may follow Altman to Microsoft."],
+a:[
+"You were removed in minutes and no longer run the company, but staff, investors and the press still follow you. A public post reaches them all. Asking the board in private keeps the door open.",
+"Investors have money at risk and can press the board. A new start-up would take your team out of OpenAI. A disclosure plan says what you would report to the board, and when.",
+"A guest badge shows you are now a visitor at your own company. A new board would replace the directors who fired you. Independent oversight means outsiders check your conduct. Microsoft is ready to hire you.",
+"Staff are signing an open letter: if the board does not resign, they may join Microsoft. You can let it grow, ask for calm, or invite the whole team to leave with you.",
+"A settlement is the deal that ends the conflict. A board seat gives you a vote on the company. A review means outside lawyers look at what happened. Written duties say what you must tell the board."],
+e:[
+"You learned it when everyone else did. The public statement says the CEO was not consistently candid, with no example. Your manager may know little more. Backing Altman in public shows your side to everyone.",
+"Colleagues are posting heart emojis on Twitter/X to show support for Sam Altman. Posting one too means joining them in public. A written question asks the board for its reasons. Silence shows no side.",
+"An interim CEO runs the company for a while. Emmett Shear co-founded Twitch and comes from outside. The Altman camp is the group of colleagues who want Altman back. A recruiter could find you a job elsewhere.",
+"The letter says that if the board does not resign, signatories may join Microsoft, which offers jobs to all. Names are visible to colleagues. Your units could lose value if the company empties.",
+"The conflict is ending. You can carry on as before, or stay and ask for a staff hotline, a protected way to report problems. Leaving means giving up part of what you hope to earn here."]};
+["b","a","e"].forEach(t=>QC[t].forEach((x,i)=>INFO["q"+t+i]={k:t==="b"?"idht":t,t:x}));
+/* What a low or high score means for each character, in the order of their metrics: [low, high]. Our model. */
+const MX={
+a:[["Others decide for you. You have no say in the company you co-founded.","You set the direction, choose the team and shape the deal."],["Partners and the press doubt your word. New projects and funding get harder.","People believe you. Investors, partners and recruits come to you."],["Staff stop following you. You are isolated and cannot rebuild a team.","Staff defend you and would follow you. You feel supported."]],
+i:[["Your vested equity loses value. Years of work are worth far less.","Your equity keeps or gains value, and you are financially secure."],["Your research loses people, computing power and priority.","You choose the research agenda and get the resources for it."],["Colleagues feel betrayed. You are isolated and work becomes painful.","Colleagues trust you. You work well together and feel supported."]],
+d:[["You lose your seat and any say over OpenAI.","You stay on the board and shape what comes next."],["People think you act for yourself or for one camp. Your vote carries less weight.","Both sides see you as fair, so you can be the bridge."],["Your own company suffers from doubts about a conflict of interest.","Your company is untouched, and you can focus on it."]],
+h:[["You lose your seat and any say over OpenAI.","You stay on the board and can ask hard questions."],["Safety concerns are ignored, and the reason you joined fades.","Safety counts in decisions. Your work has meaning."],["Your expertise is doubted, in public and in your research career.","People trust your judgment and ask for your advice."]],
+t:[["You lose your seat and any say over OpenAI.","You stay on the board and can protect the nonprofit."],["The company can ignore its board. Oversight exists only on paper.","The board can say no and be obeyed."],["You are seen as a director who failed. New roles are harder to find.","You are respected as a director who acted on principle."]],
+e:[["Your units lose value, and the payday you planned on disappears. You worry about money.","Your units gain value. The sale could change your life."],["You fear losing your job. You are stressed and look elsewhere.","You feel safe, plan ahead and focus on your work."],["You feel excluded. You avoid colleagues, and your mental health is low.","You feel included, like your work, have strong connections, and your mental health is high."]]};
+for(const t in MX)MX[t].forEach((x,i)=>INFO["m"+t+i]={k:t,t:`<b>Low:</b> ${x[0]}<br><b>High:</b> ${x[1]}`});
 const opened=new Set(),tip=s=>s.replace(/\{\{(\w+)\}\}/g,(_,k)=>`<span class="tip"><button class="i" type="button" data-i="${k}" aria-label="More information" aria-expanded="false">i</button></span>`);
 /* Why the board acted. k = roles that plausibly knew it on 17 November 2023 (our judgment) */
 const ALL="aidhte",STORY=[
@@ -298,10 +327,10 @@ function back(){const b=past.pop();if(!b)return;if(b.ph==="intro"){home();return
 function show(p){if(cur)past.push(cur);shut();ph=p;const x=D[r],P=$("panel");
 $("head").hidden=p!=="intro";
 if(p==="intro")$("head").innerHTML=`<h1>Five Days at OpenAI</h1><p>November 2023. The board fires its CEO, and five days later he is back. Each dot is one employee. <b>Our argument:</b> ${THESIS} Play to test it.</p>`,P.innerHTML=`<h2>Choose your character</h2><div class="roles">${ROLES.map((q,i)=>`<button class="choice" id="r${i}" data-r="${i}"><b>${i+1}</b><span><strong>${q.name}</strong><br>${q.job}</span></button>`).join("")}</div><p class="soft">Press 1 to 6 to choose. Take all the time you need: vote with 1, 2 or 3, and press Space or Continue to move on. Forecasts, scores and dot positions are our model. Documented facts are marked “What happened”. Hover an <span class="i demo">i</span> for more.</p>`;
-if(p==="stakes")P.innerHTML=`<h2>You are ${role.name}</h2><p>${role.goal}</p><div class="two"><div><h3>What you have</h3><dl>${role.facts.map(f=>`<div><dt>${f[0]}</dt><dd>${tip(f[1])}</dd></div>`).join("")}</dl></div><div><h3>What you play for <span class="soft">(our model)</span></h3>${role.mx.map((q,k)=>`<div class="mx">${q.n} <b>${fmt(k,q.v)}</b><i><em style="width:${100*q.v/q.max}%"></em></i></div>`).join("")}</div></div><p class="so">Before each choice you see a forecast: the odds and the reward. The best odds for you may not be the best for the company.<br>→ <b>Expectancy theory, S6:</b> people are motivated by how likely an outcome is and how much they value it. The odds show how likely it is. Your stakes show why you value it.</p>`;
+if(p==="stakes")P.innerHTML=`<h2>You are ${role.name}</h2><p>${role.goal}</p><div class="two"><div><h3>What you have</h3><dl>${role.facts.map(f=>`<div><dt>${f[0]}</dt><dd>${tip(f[1])}</dd></div>`).join("")}</dl></div><div><h3>What you play for <span class="soft">(our model)</span></h3>${role.mx.map((q,k)=>`<div class="mx">${q.n} <b>${fmt(k,q.v)}</b>${tip(`{{m${role.id}${k}}}`)}<i><em style="width:${100*q.v/q.max}%"></em></i></div>`).join("")}</div></div><p class="so">Before each choice you see a forecast: the odds and the reward. The best odds for you may not be the best for the company.<br>→ <b>Expectancy theory, S6:</b> people are motivated by how likely an outcome is and how much they value it. The odds show how likely it is. Your stakes show why you value it.</p>`;
 if(p==="story")story();
 if(p==="scene")P.innerHTML=`<h2>${x.t}</h2><p>${tip(x.s)}</p>`;
-if(p==="vote"){const t=track();P.innerHTML=`<h2>${t.q}</h2><div class="choices">${t.c.map((c,i)=>`<button class="choice" id="c${i}" data-c="${i}"><b>${i+1}</b><span>${badge(i)}${c[0]}${role.pay[r][i].map(fc).join("")||'<span class="fc soft">No effect on you</span>'}</span></button>`).join("")}</div>`}
+if(p==="vote"){const t=track();P.innerHTML=`<h2>${t.q}${tip(`{{q${role.tr}${r}}}`)}</h2><div class="choices">${t.c.map((c,i)=>`<button class="choice" id="c${i}" data-c="${i}"><b>${i+1}</b><span>${badge(i)}${c[0]}${role.pay[r][i].map(fc).join("")||'<span class="fc soft">No effect on you</span>'}</span></button>`).join("")}</div>`}
 if(p==="read"){const t=track(),k=picks[r];P.innerHTML=`<h2>${t.c[k][0]}</h2><p class="got"><b>For you:</b> ${rolls.map(a=>`${role.mx[a[0]].n} <b class="${cls(a[1])}">${sgn(a[0],a[1])}</b>`).join(", ")||"No effect on you"}</p><div class="two"><div><h3>What theory says about your choice</h3><p>${pred()}</p></div><div><h3>What happened</h3><p>${tip(x.h)}</p></div></div>`}
 if(p==="why"){const w=W[r];P.innerHTML=`<h2>${w.th} <span class="cite">${w.ref}</span></h2><div class="steps"><div><h3>Concept</h3><p>${w.con}</p></div><div><h3>Evidence in the case</h3><p>${w.ev}</p></div><div><h3>What it explains</h3><p>${w.ex}</p></div></div><p class="lens"><b>Another lens: ${w.ln}.</b> ${w.lt}</p><p class="so"><b>Lesson:</b> ${x.so} <b>In history, then:</b> ${w.nx}</p><p class="soft"><b>Mirror for our group:</b> ${x.g}</p>`}
 if(p==="sum"){const sc=score(m),g=role.mx.reduce((a,q,k)=>a+(mine[k]-q.v)/q.max,0);P.innerHTML=`<h2>${role.name}: ${g>.02?"you came out ahead":g<-.02?"you came out behind":"you broke even"}</h2><p>${role.mx.map((q,k)=>`${q.n} <b>${fmt(k,q.v)} → <span class="${cls(rd(mine[k]-q.v))}">${fmt(k,mine[k])}</span></b>`).join(" · ")} · Board and company score <b>${sc}/100</b>${role.tr==="e"?"":` (history ${hist()}/100)`}</p><p><b>What your route shows.</b> ${role.tr==="e"?"The company's result was the same whatever you did. One employee cannot move the room, and 745 together can.":g>.02&&sc<50?"You gained while the organization lost: self-interest over collective good (S4).":g<=.02&&sc>=50?"You paid for a result that served the organization. Expectancy alone would not predict that choice: duty or mission can (Kant, S7).":g>.02?"Your interest and the organization's pointed the same way. Good governance tries to make that the normal case.":"Your choices cost both you and the organization: a lose-lose conflict (S4)."}</p><p class="so"><b>Our argument.</b> ${THESIS}</p><ol class="chain">${W.map((w,i)=>`<li><b>${w.cause}</b><span>${w.th}</span><em>${D[i].d}</em></li>`).join("")}</ol><p><b>Why it holds.</b> Each step has its own evidence, and each one made the next more likely. Power explains why the vote was not enough, justice why many staff rejected it, exchange why it was hard to calm them, conformity why it spread, and culture why the rule gave way.</p><p class="soft">Limits: other factors mattered, such as the share sale and Microsoft's offer. Our scores illustrate the argument. They do not prove it.</p>`}
